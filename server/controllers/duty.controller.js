@@ -98,8 +98,8 @@ exports.completeDuty = async (req, res, next) => {
     await duty.save();
 
     // 7. Advance rotation to next person
-    room.advanceRotation();
-    await room.save();
+   await room.advanceRotation();
+  await room.save();
 
     // 8. Create a new duty log for the next person
     const nextUserId = room.rotationOrder[room.currentIndex];
@@ -172,7 +172,7 @@ exports.skipDuty = async (req, res, next) => {
     await duty.save();
 
     // Advance to next person
-    room.advanceRotation();
+   await room.advanceRotation();
     await room.save();
 
     // Create duty log for next person

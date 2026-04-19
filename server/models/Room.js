@@ -337,14 +337,44 @@ roomSchema.methods.getCurrentDutyUserId = function () {
 };
 
 // Move to the next person in rotation
-roomSchema.methods.advanceRotation = function () {
-  if (this.rotationOrder.length === 0) return;
+// roomSchema.methods.advanceRotation = function () {
+//   if (this.rotationOrder.length === 0) return;
 
-  this.currentIndex = (this.currentIndex + 1) % this.rotationOrder.length;
+//   this.currentIndex = (this.currentIndex + 1) % this.rotationOrder.length;
 
-  // If we've looped back to the start, increment the cycle count
-  if (this.currentIndex === 0) {
-    this.cycleCount += 1;
+//   // If we've looped back to the start, increment the cycle count
+//   if (this.currentIndex === 0) {
+//     this.cycleCount += 1;
+//   }
+// };
+
+// Inside models/Room.js
+roomSchema.methods.advanceRotation = async function () {
+  const User = mongoose.model('User');
+  let attempts = 0;
+  const maxAttempts = this.rotationOrder.length;
+
+  // Keep looping until we find someone who is NOT on vacation
+  while (attempts < maxAttempts) {
+    // 1. Move to the next index
+    this.currentIndex = (this.currentIndex + 1) % this.rotationOrder.length;
+    
+    // 2. Increment cycle count if we looped back to the start
+    if (this.currentIndex === 0) {
+      this.cycleCount += 1;
+    }
+
+    // 3. Look up this specific user in the database
+    const nextUserId = this.rotationOrder[this.currentIndex];
+    const user = await User.findById(nextUserId);
+
+    // 4. If they exist and are NOT on vacation, we found our next person! Stop looping.
+    if (user && user.isOnVacation === false) {
+      return; 
+    }
+
+    // If they ARE on vacation, the loop runs again to skip them and check the next person.
+    attempts++;
   }
 };
 

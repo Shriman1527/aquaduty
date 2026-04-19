@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import Modal from '../components/Modal';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, toggleVacation } = useAuth();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -68,6 +68,16 @@ const Dashboard = () => {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">AquaDuty</h1>
         </div>
         <div className="flex items-center gap-4">
+          <button
+            onClick={toggleVacation}
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
+              user?.isOnVacation
+                ? 'bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-200'
+                : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            {user?.isOnVacation ? '🌴 On Vacation' : '🌴 Set Vacation'}
+          </button>
           <div className="text-right hidden sm:block">
             <p className="text-sm font-bold text-slate-900 leading-none">{user?.name}</p>
             <p className="text-xs text-slate-500">{user?.email}</p>

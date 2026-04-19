@@ -85,6 +85,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+  // ─── 5. Toggle Vacation Mode ────────────────────────────────────────────────
+  const toggleVacation = async () => {
+    try {
+      const { data } = await api.patch('/auth/vacation');
+      setUser(data.data.user); // Instantly updates the UI globally!
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update vacation status');
+    }
+  };
+
   // ─── 5. Provide State to App ────────────────────────────────────────────────
   const value = {
     user,
@@ -93,6 +105,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    toggleVacation,
   };
 
   return (

@@ -93,6 +93,12 @@ router.post(
   authController.logout
 );
 
+// Toggle vacation mode
+router.patch(
+  '/vacation',
+  protect,
+  authController.toggleVacationMode
+);
 // Get currently logged-in user's data
 router.get(
   '/me',

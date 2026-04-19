@@ -279,7 +279,14 @@ const Room = () => {
                        <div className="flex-1">
                          <div className="flex justify-between items-start">
                            <p className="font-bold text-slate-900 text-sm">{log.userId?.name}</p>
-                           <span className="text-xs text-slate-500">{new Date(log.updatedAt || log.createdAt).toLocaleDateString()}</span>
+                          <span className="text-xs text-slate-500">
+  {new Date(log.updatedAt || log.createdAt).toLocaleString([], { 
+    month: 'short', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  })}
+</span>
                          </div>
                          <p className="text-sm text-slate-600 mt-1 capitalize">
                            Status: <span className={`font-semibold ${log.status === 'done' ? 'text-green-600' : 'text-amber-600'}`}>{log.status}</span>
@@ -362,6 +369,12 @@ const Room = () => {
                           <p className={`font-semibold text-sm ${isCurrent ? 'text-blue-900' : 'text-slate-700'}`}>
                             {member.name} {member._id === user._id && '(You)'}
                           </p>
+                          {/* The Badge */}
+                          {member.isOnVacation && (
+                            <span className="text-[10px] uppercase tracking-wider font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                              🌴 Away
+                            </span>
+                          )}
                           {isMemberAdmin && <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5"><Shield className="w-3 h-3" /> Admin</span>}
                         </div>
                       </div>
@@ -376,8 +389,8 @@ const Room = () => {
                               setMemberToRemove(member);
                               setIsRemoveOpen(true);
                             }}
-                            className="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                            title="Remove Member"
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 active:bg-red-100 active:text-red-600 rounded-lg transition-all"
+                          title="Remove Member"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

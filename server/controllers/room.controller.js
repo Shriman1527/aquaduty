@@ -60,9 +60,9 @@ exports.createRoom = async (req, res, next) => {
 
     // 3. Return populated room data
     const populated = await Room.findById(room._id)
-      .populate('members.userId',  'name email avatar')
-      .populate('rotationOrder',   'name email avatar')
-      .populate('adminId',         'name email');
+      .populate('members.userId',  'name email avatar isOnVacation')
+      .populate('rotationOrder',   'name email avatar isOnVacation')
+      .populate('adminId',         'name email ');
 
     res.status(201).json({
       success: true,
@@ -84,7 +84,7 @@ exports.getMyRooms = async (req, res, next) => {
       'members.userId': req.user._id,
       isActive:         true,
     })
-      .populate('members.userId', 'name email avatar')
+      .populate('members.userId', 'name email avatar isOnVacation')
       .populate('adminId',        'name email')
       .sort({ updatedAt: -1 });
 
@@ -94,7 +94,7 @@ exports.getMyRooms = async (req, res, next) => {
         const currentDuty = await DutyLog.findOne({
           roomId: room._id,
           status: 'pending',
-        }).populate('userId', 'name email avatar');
+        }).populate('userId', 'name email avatar isOnVacation');
 
         return { ...room.toObject(), currentDuty };
       })
@@ -115,8 +115,8 @@ exports.getMyRooms = async (req, res, next) => {
 exports.getRoom = async (req, res, next) => {
   try {
     const room = await Room.findById(req.params.id)
-      .populate('members.userId',  'name email avatar')
-      .populate('rotationOrder',   'name email avatar')
+      .populate('members.userId',  'name email avatar isOnVacation')
+      .populate('rotationOrder',   'name email avatar isOnVacation')
       .populate('adminId',         'name email avatar');
 
     if (!room) {
@@ -139,7 +139,7 @@ exports.getRoom = async (req, res, next) => {
       roomId: room._id,
       status: 'pending',
     })
-      .populate('userId', 'name email avatar')
+      .populate('userId', 'name email avatar isOnVacation')
       .sort({ scheduledDate: 1 });
 
     // Get last 10 completed/skipped duties for the history tab
@@ -258,8 +258,8 @@ exports.joinByCode = async (req, res, next) => {
 
     // Return the updated populated room
     const populated = await Room.findById(room._id)
-      .populate('members.userId',  'name email avatar')
-      .populate('rotationOrder',   'name email avatar')
+      .populate('members.userId',  'name email avatar isOnVacation')
+      .populate('rotationOrder',   'name email avatar isOnVacation')
       .populate('adminId',         'name email');
 
     res.json({
@@ -311,7 +311,7 @@ exports.shuffleRotation = async (req, res, next) => {
     // Notify all room members via socket
     const io        = req.app.get('io');
     const populated = await Room.findById(room._id)
-      .populate('rotationOrder', 'name email avatar');
+      .populate('rotationOrder', 'name email avatar isOnVacation');
 
     io.to(`room:${room._id}`).emit('rotation:updated', {
       rotationOrder: populated.rotationOrder,

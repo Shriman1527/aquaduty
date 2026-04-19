@@ -374,6 +374,39 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
+
+// ─── TOGGLE VACATION MODE ─────────────────────────────────────────────────────
+// PATCH /api/auth/vacation
+// Toggles the isOnVacation status for the currently logged-in user
+exports.toggleVacationMode = async (req, res, next) => {
+  try {
+    // req.user is provided by your protect middleware
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
+    // Toggle the boolean
+    user.isOnVacation = !user.isOnVacation;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: user.isOnVacation 
+        ? 'Vacation mode activated 🌴. You are removed from rotation.' 
+        : 'Vacation mode deactivated. Welcome back to the rotation!',
+      data: { user: user.toSafeObject() },
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
 // ─── GET ME ───────────────────────────────────────────────────────────────────
 // GET /api/auth/me
 // Returns the currently logged in user's data

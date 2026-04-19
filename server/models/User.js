@@ -183,6 +183,11 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
 
+    isOnVacation: {
+      type:    Boolean,
+      default: false,
+    },
+
     // ── Email verification ──────────────────────────────
     isEmailVerified: {
       type:    Boolean,
@@ -285,6 +290,7 @@ userSchema.methods.toSafeObject = function () {
     email:           this.email,
     avatar:          this.avatar,
     isEmailVerified: this.isEmailVerified,
+    isOnVacation:    this.isOnVacation,
     lastLogin:       this.lastLogin,
     createdAt:       this.createdAt,
   };
