@@ -70,7 +70,7 @@ const Dashboard = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleVacation}
-            className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
               user?.isOnVacation
                 ? 'bg-amber-100 text-amber-700 border-amber-300 hover:bg-amber-200'
                 : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
